@@ -1,0 +1,391 @@
+{
+	"info": {
+		"_postman_id": "6feb485d-50b6-4616-9f66-5ef425a12b3b",
+		"name": "Flight-management-showcase",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Microservices",
+			"item": [
+				{
+					"name": "{{hostname}}:9010/flight/api/v1/",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9010/flight/api/v1/",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9010",
+							"path": [
+								"flight",
+								"api",
+								"v1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9010/flight/api/v1/12",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9010/flight/api/v1/400",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9010",
+							"path": [
+								"flight",
+								"api",
+								"v1",
+								"400"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9010/flight/api/v1/search",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"origin\":\"Ciawi\",\n\t\"destination\":\"Mataigou\",\n\t\"departureFrom\":\"2019-04-10T02:52:23.000+0000\",\n\t\"departureTo\":\"2019-04-12T02:52:23.000+0000\"\n}"
+						},
+						"url": {
+							"raw": "{{hostname}}:9010/flight/api/v1/search",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9010",
+							"path": [
+								"flight",
+								"api",
+								"v1",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9020/booking/api/v1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9020/booking/api/v1",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9020",
+							"path": [
+								"booking",
+								"api",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9020/booking/api/v1/762",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9020/booking/api/v1/2",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9020",
+							"path": [
+								"booking",
+								"api",
+								"v1",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9020/booking/api/v1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"departure\":\"2019-03-02T13:26:41.000+0000\",\n\t\"arrival\":\"2019-03-02T19:26:41.000+0000\",\n\t\"passengerId\":\"2\",\n\t\"flightId\":\"10\"\n\t\n}"
+						},
+						"url": {
+							"raw": "{{hostname}}:9000/flight-management-booking-service/booking/api/v1/makeBooking",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9000",
+							"path": [
+								"flight-management-booking-service",
+								"booking",
+								"api",
+								"v1",
+								"makeBooking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9020/booking/api/v1/full/55",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9020/booking/api/v1/full/2",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9020",
+							"path": [
+								"booking",
+								"api",
+								"v1",
+								"full",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9030/passenger/api/v1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9030/passenger/api/v1",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9030",
+							"path": [
+								"passenger",
+								"api",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Support Services",
+			"item": [
+				{
+					"name": "{{hostname}}:8888/flight-management-discovery-service/default",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:8888/flight-management-booking-service/default",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "8888",
+							"path": [
+								"flight-management-booking-service",
+								"default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9000/flight-management-flights-service/flight/api/v1/",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9000/flight-management-flights-service/flight/api/v1/",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9000",
+							"path": [
+								"flight-management-flights-service",
+								"flight",
+								"api",
+								"v1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9000/flight-management-passenger-service/passenger/api/v1/",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9000/flight-management-passenger-service/passenger/api/v1/",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9000",
+							"path": [
+								"flight-management-passenger-service",
+								"passenger",
+								"api",
+								"v1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9000/flight-management-flights-service/flight/api/v1/",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9000/flight-management-flights-service/flight/api/v1",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9000",
+							"path": [
+								"flight-management-flights-service",
+								"flight",
+								"api",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9000/flight-management-flights-service/flight/api/v1/full/33",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9000/flight-management-flights-service/flight/api/v1/full/33",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9000",
+							"path": [
+								"flight-management-flights-service",
+								"flight",
+								"api",
+								"v1",
+								"full",
+								"33"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:8888/flight-management-monitor-service/default",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:8888/flight-management-monitor-service/default",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "8888",
+							"path": [
+								"flight-management-monitor-service",
+								"default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9000/flight-management-booking-service/booking/api/v1/",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostname}}:9000/flight-management-booking-service/booking/api/v1",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9000",
+							"path": [
+								"flight-management-booking-service",
+								"booking",
+								"api",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{hostname}}:9020/booking/api/v1/makeBooking",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"departure\":\"2019-03-02T13:26:41.000+0000\",\n\t\"arrival\":\"2019-03-02T19:26:41.000+0000\",\n\t\"passengerId\":\"2\",\n\t\"flightId\":\"33\"\n\t\n}"
+						},
+						"url": {
+							"raw": "{{hostname}}:9020/booking/api/v1/makeBooking",
+							"host": [
+								"{{hostname}}"
+							],
+							"port": "9020",
+							"path": [
+								"booking",
+								"api",
+								"v1",
+								"makeBooking"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
