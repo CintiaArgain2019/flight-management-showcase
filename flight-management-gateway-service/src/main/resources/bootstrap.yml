@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: flight-management-gateway-service
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
+      username: user
+      password: ${CONFIG_SERVICE_PASSWORD:user123}
+
+---
+spring:
+  profiles: production
+  cloud:
+    config:
+      uri: http://flight-management-config-service:8888
+

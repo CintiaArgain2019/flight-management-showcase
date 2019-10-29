@@ -1,0 +1,21 @@
+spring:
+  cloud:
+    config:
+      server:
+        #git.uri: https://github.com/CintiaArgain2019/flight-management-config.git
+        native:
+          searchLocations: classpath:/shared
+  profiles:
+     active: native
+
+server:
+  port: 8888
+
+---
+spring:
+  profiles: production
+  cloud:
+    config:
+      server:
+         git.uri: https://github.com/CintiaArgain2019/flight-management-config.git
+

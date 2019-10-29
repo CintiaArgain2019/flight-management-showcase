@@ -1,0 +1,70 @@
+server:
+   port: 9000
+   
+spring:
+  zipkin:
+    base-url: http://${ZIPKIN_HOST:localhost:9411}
+    enabled: true
+    service:
+      name: flight-management-gateway-service
+    message-timeout: 10
+  sleuth:
+    sampler:
+      probability: 1.0
+
+zuul:
+  sensitiveHeaders:
+  host:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 20000
+    connection-request-timeout-millis: 10000
+  routes:
+    flight-management-booking-service:
+      path: /flight/api/v1/**
+      serviceId: flight-management-booking-service
+  
+    flight-management-passenger-service:
+      path: /booking/api/v1/**
+      serviceId: flight-management-passenger-service
+    
+    flight-management-flights-service:
+      path: /flight/api/v1/**
+      serviceId: flight-management-passenger-service        
+
+  ribbon:
+    eager-load:
+      enabled: true
+  ribbon-isolation-strategy: THREAD
+
+
+ribbon:
+  ConnectTimeout: 10000
+  ReadTimeout: 10000
+  
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOST:localhost:8761}/eureka/
+    registerWithEureka: true
+  instance:
+    prefer-ip-address: false
+
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 40000
+            
+---
+spring:
+  profiles: production
+  
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://flight-management-discovery-service:8761/eureka
+  instance:
+    preferIpAddress: false

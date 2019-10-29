@@ -1,0 +1,66 @@
+server:
+  port: 9010
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOST:localhost:8761}/eureka/
+    registerWithEureka: true
+  instance:
+    prefer-ip-address: false
+
+management:
+  endpoints:
+    hystrix:
+      stream:
+        enabled: true
+    web:
+      exposure:
+        include: hystrix.stream,info,health
+
+spring:
+  zipkin:
+    base-url: http://${ZIPKIN_HOST:localhost:9411}
+    enabled: true
+    service:
+      name: flight-management-flights-service
+    message-timeout: 10
+  sleuth:
+    sampler:
+      probability: 1.0
+   # ===============================
+   # = DATA SOURCE
+   # ===============================
+   # Set here configurations for the database connection
+  datasource:
+    url: jdbc:mysql://${DB_HOST_PORT:localhost:3306}/${DATABASE_NAME:airline}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    driverClassName: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:password} 
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+       ddl-auto:update
+      
+logging:
+  pattern: 
+    console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+   
+logstash:
+   host: logstash
+
+         
+---
+spring:
+  profiles: production
+
+  
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOST}:8761/eureka
+  instance:
+    preferIpAddress: false

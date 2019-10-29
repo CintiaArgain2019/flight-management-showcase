@@ -1,0 +1,239 @@
+version: '3.3'
+services:
+
+  flight-management-db:
+    container_name: flight-management-db
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - net  
+    volumes:
+      - .mysql:/var/lib/mysql
+      - ./flight-management-DB-initialize/mysql-init-files:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci'] 
+
+  ###########################################################################################
+  ## elastic-stack
+  ###########################################################################################
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9300:9300
+      - 9200:9200
+    networks:
+      - net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.2.0
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9300"
+    ports:
+      - 5601:5601
+    networks:
+      - net
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.2.0
+    container_name: logstash
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./logstash/pipeline:/etc/logstash/conf.d
+    ports:
+      - "5000:5000"
+    networks:
+      - net
+
+  ##############################################################################################################
+  # Core services
+  ##############################################################################################################
+  flight-management-config-service:
+    container_name: flight-management-config-service
+    image: flight-management-config-service
+    environment:
+      SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      CONFIG_KEYSTORE_PASSWORD: $CONFIG_KEYSTORE_PASSWORD
+      CONFIG_KEY_PASSWORD: $CONFIG_KEY_PASSWORD
+    restart: always
+    depends_on:
+      - logstash
+    ports:
+      - "8888:8888"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  flight-management-discovery-service:
+    container_name: flight-management-discovery-service
+    image: flight-management-discovery-service
+    environment:
+      SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+    restart: always
+    depends_on:
+      - flight-management-config-service
+    ports:
+      - "8761:8761"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+        
+  flight-management-gateway-service:
+    container_name: flight-management-gateway-service
+    image: flight-management-gateway-service
+    environment:
+      SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE
+      SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      ZIPKIN_HOST: $ZIPKIN_HOST  
+    restart: always
+    depends_on:
+      - flight-management-config-service
+      - flight-management-discovery-service
+      - flight-management-zipkin
+      - logstash
+    ports:
+      - "9000:9000"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+        
+  # Tracing service
+  flight-management-zipkin:
+    image: openzipkin/zipkin
+    container_name: bookstore-zipkin
+    hostname: bookstore-zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - net     
+     
+  ##############################################################################################################
+  # Micro services
+  ##############################################################################################################      
+  flight-management-flights-service:
+    container_name: flight-management-flights-service
+    image: flight-management-flights-service
+    environment:
+      SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      DB_HOST_PORT: $DB_HOST_PORT
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      DATABASE_NAME: $DATABASE_NAME
+      EUREKA_HOST: $EUREKA_HOST
+      ZIPKIN_HOST: $ZIPKIN_HOST
+    restart: always
+    depends_on:
+      - flight-management-config-service
+      - flight-management-discovery-service
+      - flight-management-db
+      - flight-management-zipkin
+      - logstash
+    entrypoint: ["./wait-for-it.sh","flight-management-config-service:8888","--timeout=60","--", "./wait-for-it.sh","logstash:5000","--timeout=180","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]   
+    ports:
+      - "9010:9010"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10" 
+              
+  flight-management-booking-service:
+    container_name: flight-management-booking-service
+    image: flight-management-booking-service
+    environment:
+      SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      DB_HOST_PORT: $DB_HOST_PORT
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      DATABASE_NAME: $DATABASE_NAME
+      EUREKA_HOST: $EUREKA_HOST
+      ZIPKIN_HOST: $ZIPKIN_HOST
+    restart: always
+    depends_on:
+      - flight-management-config-service
+      - flight-management-discovery-service
+      - flight-management-db
+      - flight-management-flights-service
+      - flight-management-passenger-service
+      - flight-management-zipkin
+      - logstash
+    entrypoint: ["./wait-for-it.sh","flight-management-config-service:8888","--timeout=60","--", "./wait-for-it.sh","logstash:5000","--timeout=180","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]  
+    ports:
+      - "9020:9020"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+  
+  
+  flight-management-passenger-service:
+    container_name: flight-management-passenger-service
+    image: flight-management-passenger-service
+    environment:
+      SPRING_PROFILES_ACTIVE: $SPRING_PROFILES_ACTIVE
+      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      DB_HOST_PORT: $DB_HOST_PORT
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      DATABASE_NAME: $DATABASE_NAME
+      EUREKA_HOST: $EUREKA_HOST
+      ZIPKIN_HOST: $ZIPKIN_HOST
+    restart: always
+    depends_on:
+      - flight-management-config-service
+      - flight-management-discovery-service
+      - flight-management-db
+      - flight-management-zipkin
+      - logstash
+    entrypoint: ["./wait-for-it.sh","flight-management-config-service:8888","--timeout=60","--", "./wait-for-it.sh","logstash:5000","--timeout=180","--","java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]  
+    ports:
+      - "9030:9030"
+    networks:
+      - net
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+        
+networks:
+  net:
+    driver: bridge  
+
+volumes:
+  esdata1:
+    driver: local

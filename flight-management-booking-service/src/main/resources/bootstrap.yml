@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: flight-management-booking-service
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
+      username: user
+      password: ${CONFIG_SERVICE_PASSWORD:user123}
+
+logging:
+  level:
+    org.cargain.*: DEBUG
+    
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"    
+    
+logstash:
+  host: localhost
+
+---
+spring:
+  profiles: production
+  cloud:
+    config:
+      uri: http://flight-management-config-service:8888
+
+logstash:
+  host: logstash

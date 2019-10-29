@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: flight-management-passenger-service
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
+      username: user
+      password: ${CONFIG_SERVICE_PASSWORD:config123}
+
+logstash:
+  host: localhost
+
+---
+spring:
+  profiles: production
+  cloud:
+    config:
+      uri: http://flight-management-config-service:8888
+
+logstash:
+  host: logstash
+

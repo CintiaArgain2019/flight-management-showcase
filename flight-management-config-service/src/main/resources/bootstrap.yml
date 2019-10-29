@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: flight-management-config-service
+
+---
+spring:
+  profiles: production
