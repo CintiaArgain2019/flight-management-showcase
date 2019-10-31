@@ -3,11 +3,11 @@
 This is a proof-of-concept application, which demonstrates Microservice Architecture Pattern using Spring Boot Microservices  via Spring Cloud, Netflix OSS, ELK Stack, Docker.
 
 ## Development environment
-Docker 19.03.2
-Docker Compose 1.24.1
-Docker MySQL 8.0.18
-Java8 
-Spring Cloud Greenwich.SR3
+- Docker 19.03.2
+- Docker Compose 1.24.1
+- Docker MySQL 8.0.18
+- Java8 
+- Spring Cloud Greenwich.SR3
 
 
 ## Setup and Running on Docker (Single Instance)
