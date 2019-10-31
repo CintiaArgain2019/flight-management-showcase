@@ -82,7 +82,7 @@ public class BookingController {
 	}
 
 
-	@PostMapping(value = "/makeBooking")
+	@PostMapping
 	@HystrixCommand(fallbackMethod = "fallback_makeBooking", commandProperties = {
 		      @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000")
 		   })

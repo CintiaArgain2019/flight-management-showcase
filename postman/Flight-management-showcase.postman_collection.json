@@ -141,7 +141,7 @@
 							"raw": "{\n\t\"departure\":\"2019-03-02T13:26:41.000+0000\",\n\t\"arrival\":\"2019-03-02T19:26:41.000+0000\",\n\t\"passengerId\":\"2\",\n\t\"flightId\":\"10\"\n\t\n}"
 						},
 						"url": {
-							"raw": "{{hostname}}:9000/flight-management-booking-service/booking/api/v1/makeBooking",
+							"raw": "{{hostname}}:9000/flight-management-booking-service/booking/api/v1/",
 							"host": [
 								"{{hostname}}"
 							],
@@ -150,8 +150,7 @@
 								"flight-management-booking-service",
 								"booking",
 								"api",
-								"v1",
-								"makeBooking"
+								"v1"
 							]
 						}
 					},
