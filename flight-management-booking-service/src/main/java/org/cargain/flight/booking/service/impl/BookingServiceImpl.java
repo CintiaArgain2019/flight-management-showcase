@@ -77,9 +77,7 @@ public class BookingServiceImpl implements IBookingService {
 		PassengerResponse passengerResponse = passengerFeignClient.getPassenger(request.getFlightId());
 		log.debug("###### Passenger Found: {}", passengerResponse.toString());
 
-		if (response == null) {
-			System.out.println();
-		} else {
+		if (response != null) {
 			Booking booking = Booking.builder().departure(request.getDeparture()).arrival(request.getArrival())
 					.passengerId(request.getPassengerId()).flightId(response.getId()).build();
 
